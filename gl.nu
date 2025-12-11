@@ -47,7 +47,7 @@ export def "gl balances" [] {
 
 # Project state from gl-fact (canonical ledger)
 export def "gl state" [] {
-    .cat gl-fact | reduce --fold {accounts: {}, balances: {}} {|frame, state|
+    .cat -T gl-fact | reduce --fold {accounts: {}, balances: {}} {|frame, state|
         let cmd = $frame.meta.cmd
         if $cmd == "activate" {
             let new_accounts = $state.accounts | insert $frame.meta.account $frame.meta.type
@@ -88,15 +88,15 @@ export def "gl trial-balance" [] {
 
 # View raw input stream
 export def "gl stream" [] {
-    .cat gl-post
+    .cat -T gl-post
 }
 
 # View canonical ledger
 export def "gl ledger" [] {
-    .cat gl-fact
+    .cat -T gl-fact
 }
 
 # View validation errors
 export def "gl errors" [] {
-    .cat gl-error
+    .cat -T gl-error
 }
