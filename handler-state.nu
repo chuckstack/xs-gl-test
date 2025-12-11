@@ -7,6 +7,9 @@
 
 {
   run: {|frame|
+    # Only process gl-fact topic
+    if $frame.topic != "gl-fact" { return }
+
     let meta = $frame.meta?
     let cmd = $meta.cmd?
 

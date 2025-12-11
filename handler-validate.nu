@@ -7,6 +7,9 @@
 
 {
   run: {|frame|
+    # Only process gl-post topic
+    if $frame.topic != "gl-post" { return }
+
     let meta = $frame.meta?
     let cmd = $meta.cmd?
     let source_id = $frame.id
