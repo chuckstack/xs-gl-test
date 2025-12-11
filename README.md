@@ -39,7 +39,7 @@ gl activate "Equity:Opening" "equity"
 gl post [{account: "Asset:Cash", amount: 10000} {account: "Equity:Opening", amount: -10000}]
 
 # View balances
-gl accounts
+gl trial-balance
 ```
 
 ## Architecture

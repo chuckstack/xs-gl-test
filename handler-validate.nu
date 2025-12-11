@@ -125,5 +125,6 @@
     }
   }
 
-  resume_from: "tail"
+  # Resume from last processed frame, otherwise from start
+  resume_from: (.head gl-fact | if ($in | is-not-empty) { get meta.frame_id } else { "root" })
 }
