@@ -35,7 +35,8 @@ gl post [{account: "Asset:Bank", amount: 5000} {account: "Asset:Cash", amount: -
 sleep 500ms
 
 # Check balances
-gl accounts
+print "\nAccount balances:"
+print (gl accounts)
 
 # ─────────────────────────────────────────────────────────────
 # ERROR CASES
@@ -59,4 +60,4 @@ sleep 500ms
 
 # Show errors
 print "\nValidation errors:"
-gl errors | each { $in.meta } | select source_id error
+print (gl errors | each { $in.meta } | select source_id error)
