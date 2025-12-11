@@ -1,7 +1,8 @@
+#!/usr/bin/env nu
 # GL Example Session
 #
 # Run with:
-#   source example.nu
+#   ./example.nu
 
 # Register handlers
 open handler-validate.nu | .append gl-post.validate.register
