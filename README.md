@@ -38,9 +38,33 @@ gl post [{account: "Asset:Cash", amount: 10000} {account: "Equity:Opening", amou
 gl accounts
 ```
 
+## Architecture
+
+```
+gl-post (raw input)          gl-fact (canonical)           gl-state (cache)
+┌─────────────────┐          ┌─────────────────┐           ┌─────────────────┐
+│ {cmd: "post"..} │ ───────► │ {cmd: "post"..} │ ────────► │ {balances: ..}  │
+│                 │ validate │ normalized      │ state     │                 │
+└─────────────────┘          └─────────────────┘           └─────────────────┘
+        │
+        │ invalid
+        ▼
+┌─────────────────┐
+│ gl-error        │
+│ {error: "..."}  │
+└─────────────────┘
+```
+
+| Topic | TTL | Purpose |
+|-------|-----|---------|
+| `gl-post` | forever | Raw input, audit trail |
+| `gl-fact` | forever | Canonical, normalized ledger |
+| `gl-error` | forever | Validation failures |
+| `gl-state` | head:1 | Cached balances (latest only) |
+
 ## Event Model (CQRS)
 
-Single stream, three commands:
+Three commands:
 
 | Command | Description |
 |---------|-------------|
@@ -97,14 +121,23 @@ gl post [
 # View all accounts with balances
 gl accounts
 
+# Get balances (O(1) from cache)
+gl balances
+
 # Get projected state (accounts + balances records)
 gl state
 
 # Trial balance
 gl trial-balance
 
-# View raw event stream
+# View raw input stream
 gl stream
+
+# View canonical ledger
+gl ledger
+
+# View validation errors
+gl errors
 ```
 
 ## Example Session
@@ -135,31 +168,28 @@ gl accounts
 
 ## Handlers
 
-xs handlers react to frames in real-time. They can validate, enrich, or trigger side effects.
+xs handlers react to frames in real-time. They validate, enrich, or trigger side effects.
 
-### Example: Amount Limit Handler
+### Core Handlers
 
-`handler-limit.nu` appends an error frame when any posting line exceeds $100:
-
+**handler-validate.nu** - Validates and normalizes input:
 ```nu
-# Register the handler
-open handler-limit.nu | .append gl-limit.register
-
-# Check it's active
-.cat -T gl-limit.active
-
-# Unregister when done
-.append gl-limit.unregister
+# Register
+open handler-validate.nu | .register gl-post.validate
 ```
+- Watches `gl-post`
+- Normalizes float amounts to integer cents
+- Validates postings balance (sum = 0)
+- Writes valid entries to `gl-fact`, invalid to `gl-error`
 
-When a posting exceeds the limit:
+**handler-state.nu** - Maintains balance cache:
 ```nu
-# This triggers an error (15000 = $150)
-gl post [{account: "Expense:Office", amount: 15000} {account: "Asset:Cash", amount: -15000}]
-
-# View errors
-.cat -T gl.error
+# Register
+open handler-state.nu | .register gl-fact.state
 ```
+- Watches `gl-fact`
+- Updates cached balances on each post
+- Writes to `gl-state` with TTL `head:1`
 
 ### Handler Architecture
 

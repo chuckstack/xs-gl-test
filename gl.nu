@@ -11,24 +11,21 @@ export def "gl activate" [
     account: string  # e.g., "Asset:Cash"
     type: string     # asset, liability, equity, revenue, expense
 ] {
-    .append gl --meta {cmd: "activate", account: $account, type: $type}
+    .append gl-post --meta {cmd: "activate", account: $account, type: $type}
 }
 
 # Deactivate an account
 export def "gl deactivate" [account: string] {
-    .append gl --meta {cmd: "deactivate", account: $account}
+    .append gl-post --meta {cmd: "deactivate", account: $account}
 }
 
-# Post a balanced transaction (amounts in cents, must sum to zero)
+# Post a transaction (amounts in cents or dollars, must sum to zero)
+# Validation and normalization handled by handler-validate
 export def "gl post" [
     lines: list           # [{account: "Asset:Cash", amount: 10000}, ...]
     --description: string # optional description
 ] {
-    let total = $lines | get amount | math sum
-    if $total != 0 {
-        error make {msg: $"posting does not balance: sum = ($total)"}
-    }
-    .append gl --meta {
+    .append gl-post --meta {
         cmd: "post"
         description: ($description | default "")
         lines: $lines
@@ -39,9 +36,18 @@ export def "gl post" [
 # QUERIES
 # ─────────────────────────────────────────────────────────────
 
-# Project state from the stream
+# Get balances from cache, fallback to projection
+export def "gl balances" [] {
+    try {
+        .head gl-state | get meta.balances
+    } catch {
+        gl state | get balances
+    }
+}
+
+# Project state from gl-fact (canonical ledger)
 export def "gl state" [] {
-    .cat -T gl | reduce --fold {accounts: {}, balances: {}} {|frame, state|
+    .cat gl-fact | reduce --fold {accounts: {}, balances: {}} {|frame, state|
         let cmd = $frame.meta.cmd
         if $cmd == "activate" {
             let new_accounts = $state.accounts | insert $frame.meta.account $frame.meta.type
@@ -80,7 +86,17 @@ export def "gl trial-balance" [] {
     gl accounts | select account type balance display
 }
 
-# View raw stream
+# View raw input stream
 export def "gl stream" [] {
-    .cat -T gl
+    .cat gl-post
+}
+
+# View canonical ledger
+export def "gl ledger" [] {
+    .cat gl-fact
+}
+
+# View validation errors
+export def "gl errors" [] {
+    .cat gl-error
 }
