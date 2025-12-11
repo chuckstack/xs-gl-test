@@ -3,7 +3,7 @@
 # Watches gl-post, validates entries, writes to gl-fact or gl-error
 #
 # Register with:
-#   open handler-validate.nu | .register gl-post.validate
+#   open handler-validate.nu | .append gl-post.validate.register
 
 {
   run: {|frame|

@@ -27,6 +27,10 @@ $env.XS_ADDR = ("~/.local/share/gl-demo" | path expand)
 use xs.nu *
 use gl.nu *
 
+# Register handlers (once per store)
+open handler-validate.nu | .append gl-post.validate.register
+open handler-state.nu | .append gl-fact.state.register
+
 # Create accounts
 gl activate "Asset:Cash" "asset"
 gl activate "Equity:Opening" "equity"
@@ -175,7 +179,7 @@ xs handlers react to frames in real-time. They validate, enrich, or trigger side
 **handler-validate.nu** - Validates and normalizes input:
 ```nu
 # Register
-open handler-validate.nu | .register gl-post.validate
+open handler-validate.nu | .append gl-post.validate.register
 ```
 - Watches `gl-post`
 - Normalizes float amounts to integer cents
@@ -185,7 +189,7 @@ open handler-validate.nu | .register gl-post.validate
 **handler-state.nu** - Maintains balance cache:
 ```nu
 # Register
-open handler-state.nu | .register gl-fact.state
+open handler-state.nu | .append gl-fact.state.register
 ```
 - Watches `gl-fact`
 - Updates cached balances on each post

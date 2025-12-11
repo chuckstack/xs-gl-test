@@ -3,7 +3,7 @@
 # Watches gl-fact, maintains cached balance state in gl-state
 #
 # Register with:
-#   open handler-state.nu | .register gl-fact.state
+#   open handler-state.nu | .append gl-fact.state.register
 
 {
   run: {|frame|
