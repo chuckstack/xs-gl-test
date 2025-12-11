@@ -146,29 +146,18 @@ gl errors
 
 ## Example Session
 
-```nu
-# Set up accounts
-gl activate "Asset:Cash" "asset"
-gl activate "Asset:Bank" "asset"
-gl activate "Equity:Opening" "equity"
-gl activate "Revenue:Sales" "revenue"
-gl activate "Expense:Rent" "expense"
+Run the included example script:
 
-# Opening balance
-gl post [{account: "Asset:Bank", amount: 100000} {account: "Equity:Opening", amount: -100000}] --description "Opening balance"
+```bash
+# Start with a fresh store
+rm -rf ~/.local/share/gl-demo
+xs serve ~/.local/share/gl-demo
 
-# Receive payment
-gl post [{account: "Asset:Cash", amount: 5000} {account: "Revenue:Sales", amount: -5000}] --description "Cash sale"
-
-# Pay rent
-gl post [{account: "Expense:Rent", amount: 20000} {account: "Asset:Bank", amount: -20000}] --description "Monthly rent"
-
-# Transfer cash to bank
-gl post [{account: "Asset:Bank", amount: 5000} {account: "Asset:Cash", amount: -5000}] --description "Deposit"
-
-# Check balances
-gl accounts
+# In another terminal
+./example.nu
 ```
+
+> **Note:** The example is not idempotent - it creates accounts and posts transactions. Run against a fresh store each time, or errors will occur (e.g., duplicate account activation).
 
 ## Handlers
 

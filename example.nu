@@ -1,6 +1,10 @@
 #!/usr/bin/env nu
 # GL Example Session
 #
+# NOTE: Not idempotent - requires a fresh store each run:
+#   rm -rf ~/.local/share/gl-demo
+#   xs serve ~/.local/share/gl-demo
+#
 # Run with:
 #   ./example.nu
 
@@ -41,8 +45,6 @@ print (gl accounts)
 # ─────────────────────────────────────────────────────────────
 # ERROR CASES
 # ─────────────────────────────────────────────────────────────
-
-print "\n--- Error cases ---"
 
 # Unbalanced posting
 gl post [{account: "Asset:Cash", amount: 1000}] --description "Unbalanced"
