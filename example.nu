@@ -36,3 +36,24 @@ sleep 500ms
 
 # Check balances
 gl accounts
+
+# ─────────────────────────────────────────────────────────────
+# ERROR CASES
+# ─────────────────────────────────────────────────────────────
+
+print "\n--- Error cases ---"
+
+# Unbalanced posting
+gl post [{account: "Asset:Cash", amount: 1000}] --description "Unbalanced"
+
+# Duplicate account activation
+gl activate "Asset:Cash" "asset"
+
+# Invalid account type
+gl activate "Asset:Inventory" "assett"
+
+sleep 500ms
+
+# Show errors
+print "\nValidation errors:"
+gl errors | each { $in.meta } | select source_id error
