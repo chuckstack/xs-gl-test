@@ -38,6 +38,16 @@
         return
       }
 
+      # Check for duplicate account
+      let balances = try { .head gl-state | get meta.balances } catch { {} }
+      if $account in ($balances | columns) {
+        .append gl-error --meta {
+          source_id: $source_id
+          error: $"account already exists: ($account)"
+        }
+        return
+      }
+
       .append gl-fact --meta {
         cmd: "activate"
         account: $account
