@@ -31,5 +31,8 @@ gl post [{account: "Expense:Rent", amount: 20000} {account: "Asset:Bank", amount
 # Transfer cash to bank
 gl post [{account: "Asset:Bank", amount: 5000} {account: "Asset:Cash", amount: -5000}] --description "Deposit"
 
+# Allow handlers to complete
+sleep 500ms
+
 # Check balances
 gl accounts
