@@ -14,24 +14,65 @@
     let cmd = $meta.cmd?
     let source_id = $frame.id
 
+    let valid_types = ["asset", "liability", "equity", "revenue", "expense"]
+
     if $cmd == "activate" {
-      # Pass through to gl-fact
+      let account = $meta.account?
+      let type = $meta.type?
+
+      # Validate required fields
+      if ($account | is-empty) or ($type | is-empty) {
+        .append gl-error --meta {
+          source_id: $source_id
+          error: "activate requires account and type"
+        }
+        return
+      }
+
+      # Validate account type
+      if $type not-in $valid_types {
+        .append gl-error --meta {
+          source_id: $source_id
+          error: $"invalid account type: ($type)"
+        }
+        return
+      }
+
       .append gl-fact --meta {
         cmd: "activate"
-        account: $meta.account
-        type: $meta.type
+        account: $account
+        type: $type
         source_id: $source_id
       }
     } else if $cmd == "deactivate" {
-      # Pass through to gl-fact
+      let account = $meta.account?
+
+      # Validate required fields
+      if ($account | is-empty) {
+        .append gl-error --meta {
+          source_id: $source_id
+          error: "deactivate requires account"
+        }
+        return
+      }
+
       .append gl-fact --meta {
         cmd: "deactivate"
-        account: $meta.account
+        account: $account
         source_id: $source_id
       }
     } else if $cmd == "post" {
       let lines = $meta.lines?
       let description = $meta.description? | default ""
+
+      # Validate required fields
+      if ($lines | is-empty) {
+        .append gl-error --meta {
+          source_id: $source_id
+          error: "post requires lines"
+        }
+        return
+      }
 
       # Normalize: convert float amounts to integer cents
       let normalized_lines = $lines | each {|line|
@@ -54,7 +95,6 @@
         return
       }
 
-      # Valid - promote to gl-fact
       .append gl-fact --meta {
         cmd: "post"
         description: $description

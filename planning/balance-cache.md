@@ -68,7 +68,7 @@ Single state frame chosen for:
 
 ## Implementation Status
 
-- [ ] Create `handler-state.nu`
-- [ ] Register handler
-- [ ] Update `gl.nu` to use cache for queries
-- [ ] Add fallback to full projection if cache missing
+- [x] Create `handler-state.nu`
+- [x] Register handler
+- [x] Update `gl.nu` to use cache for queries
+- [x] Add fallback to full projection if cache missing

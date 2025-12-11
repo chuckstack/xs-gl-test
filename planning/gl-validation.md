@@ -51,7 +51,7 @@ gl-post                        gl-fact
 
 ## Implementation Status
 
-- [ ] Create `handler-validate.nu`
-- [ ] Update `gl.nu` to append to `gl-post` instead of `gl`
-- [ ] Update projections to read from `gl-fact`
-- [ ] Test validation and normalization
+- [x] Create `handler-validate.nu`
+- [x] Update `gl.nu` to append to `gl-post` instead of `gl`
+- [x] Update projections to read from `gl-fact`
+- [x] Test validation and normalization
