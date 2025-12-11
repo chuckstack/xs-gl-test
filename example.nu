@@ -4,6 +4,7 @@
 # Run with:
 #   ./example.nu
 
+$env.XS_ADDR = ("~/.local/share/gl-demo" | path expand)
 use xs.nu *
 use gl.nu *
 
