@@ -52,6 +52,9 @@ gl activate "Asset:Cash" "asset"
 # Invalid account type
 gl activate "Asset:Inventory" "assett"
 
+# Deactivate account with non-zero balance
+gl deactivate "Asset:Bank"
+
 sleep 500ms
 
 # Show errors

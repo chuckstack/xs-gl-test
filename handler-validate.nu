@@ -66,6 +66,17 @@
         return
       }
 
+      # Check account has zero balance
+      let balances = try { .head gl-state | get meta.balances } catch { {} }
+      let balance = $balances | get -o $account | default 0
+      if $balance != 0 {
+        .append gl-error --meta {
+          source_id: $source_id
+          error: $"cannot deactivate account with non-zero balance: ($account) has ($balance)"
+        }
+        return
+      }
+
       .append gl-fact --meta {
         cmd: "deactivate"
         account: $account
