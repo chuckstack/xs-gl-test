@@ -4,6 +4,9 @@
 # Run with:
 #   ./example.nu
 
+use xs.nu *
+use gl.nu *
+
 # Register handlers
 open handler-validate.nu | .append gl-post.validate.register
 open handler-state.nu | .append gl-fact.state.register
