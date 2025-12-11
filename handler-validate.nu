@@ -14,7 +14,22 @@
     let cmd = $meta.cmd?
     let source_id = $frame.id
 
-    if $cmd == "post" {
+    if $cmd == "activate" {
+      # Pass through to gl-fact
+      .append gl-fact --meta {
+        cmd: "activate"
+        account: $meta.account
+        type: $meta.type
+        source_id: $source_id
+      }
+    } else if $cmd == "deactivate" {
+      # Pass through to gl-fact
+      .append gl-fact --meta {
+        cmd: "deactivate"
+        account: $meta.account
+        source_id: $source_id
+      }
+    } else if $cmd == "post" {
       let lines = $meta.lines?
       let description = $meta.description? | default ""
 
@@ -47,9 +62,6 @@
         source_id: $source_id
       }
     }
-
-    # TODO: validate activate (check valid account types)
-    # TODO: validate deactivate
   }
 
   resume_from: "tail"
