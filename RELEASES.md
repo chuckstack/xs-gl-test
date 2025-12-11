@@ -1,5 +1,19 @@
 # Releases
 
+## 20251211-2
+
+Handler restart resilience and documentation.
+
+### Changes
+
+- **Handler `resume_from`**: Handlers now resume from last processed frame on restart instead of only processing new frames
+  - Uses `.head <output-topic> | $in.id` pattern
+  - Ensures unprocessed frames are handled after restart/re-registration
+- **Documentation**: Added `example.nu` reference to README with idempotency warning
+- **Bug fixes**: Fixed `.cat` topic flag (`-T`), handler registration (`.append` not `.register`)
+
+---
+
 ## 20251211
 
 Initial implementation of event-sourced general ledger with validation and caching.
