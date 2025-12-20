@@ -1,0 +1,6 @@
+[submodule "xs"]
+	path = xs
+	url = https://github.com/cablehead/xs.git
+[submodule "http-nu"]
+	path = http-nu
+	url = https://github.com/cablehead/http-nu.git
