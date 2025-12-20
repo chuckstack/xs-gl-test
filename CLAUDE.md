@@ -4,7 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Event-sourced double-entry accounting system. See README.md for full documentation on usage, commands, and examples.
+**gl.je** - Event-sourced double-entry accounting system. The name combines General Ledger (GL) with Journal Entry (JE), the fundamental unit of double-entry bookkeeping.
+
+See README.md for full documentation on usage, commands, and examples.
 
 ## Running the System
 

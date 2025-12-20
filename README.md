@@ -1,6 +1,8 @@
-# gl - Event-Sourced Accounting General Ledger
+# gl.je - Event-Sourced Accounting General Ledger
 
 A minimal double-entry accounting system built on [xs](https://github.com/cablehead/xs) (cross.stream) and [Nushell](https://www.nushell.sh).
+
+**gl.je** = General Ledger + Journal Entry (the fundamental unit of double-entry bookkeeping)
 
 The ledger is an append-only event stream. State (account balances) is derived by projecting over events.
 
