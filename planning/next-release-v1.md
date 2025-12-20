@@ -52,7 +52,7 @@ cash, travel, test1, campaign-sammy, 2025-q1
 Guidelines:
 - Lowercase preferred (speed typing)
 - Dashes preferred (10-key accessible, easier than underscore)
-- No semantic encoding required (identifier `travel` with type `expense`, not `expense-travel`)
+- No semantic encoding required (identifier `travel` with type `expense`, not required `expense-travel`)
 - Uppercase and underscores valid but not convention
 
 ### Descriptions
@@ -97,7 +97,7 @@ The key is the sole identifier for all access (website, API, password recovery).
 
 ### Accounts
 
-Standard double-entry accounts with types: asset, liability, equity, revenue, expense.
+Standard double-entry accounts with types enum: asset, liability, equity, revenue, expense.
 
 ### Settings
 
@@ -120,7 +120,9 @@ gl post [
 ]
 ```
 
-Amounts in cents. Sum must equal zero.
+Amounts is a signed integer in cents. Sum must equal zero.
+
+NOTE: eventually we will need to account for (group by) 'entity' when summing to zero - to be addressed later. in the short term, entities are a simple dimension like any other.
 
 ## Event Model
 
@@ -268,3 +270,19 @@ http-nu features: routing module, HTML DSL, Datastar SSE SDK, JSON Schema valida
 1. Dimension type hierarchies?
 2. Reports beyond trial balance?
 3. Alias implementation details?
+
+## Design Decisions
+
+### Topic Prefix: gl-
+
+Decision: Keep the `gl-` prefix on all xs topics.
+
+Rationale:
+- Short and easy to include
+- Allows other modules to add topics with different prefixes
+- Avoids potential xs reserved topic name conflicts
+- Matches CLI command prefix (`gl`)
+
+## References
+
+- http-nu-oauth: github.com/cablehead/http-nu-oauth
