@@ -283,6 +283,37 @@ Rationale:
 - Avoids potential xs reserved topic name conflicts
 - Matches CLI command prefix (`gl`)
 
+## Future Features
+
+### 10-Key Express Entry
+
+Rapid transaction entry using only the numeric keypad. Targets high-volume data entry operators.
+
+**Concept**: Numeric aliases for accounts follow traditional chart of accounts numbering.
+
+```
+1200 = cash (asset)
+6205 = travel (expense)
+```
+
+**Entry format**: `account amount . account amount`
+
+```
+1200 -9998 . 6205 9998
+```
+
+Translates to: debit cash $99.98, credit travel $99.98.
+
+**With dimensions**: `account amount ..dim=val+dim=val.. . account amount`
+
+```
+1200 -9998 . 6205 9998 ..1=5+2=3..
+```
+
+Where `1=5` means project=test1, `2=3` means campaign=sammy.
+
+**Dependencies**: Requires alias feature implementation.
+
 ## References
 
 - http-nu-oauth: github.com/cablehead/http-nu-oauth
