@@ -83,3 +83,40 @@ _div {id: "accounts"} {           # _tag starts element, closure for children
 Both CLI and web share the same http-nu routes. The `is-cli` check differentiates response format:
 - CLI: JSON response (nushell records/tables)
 - Web: Datastar SSE patches (`to dstar-patch-element | to sse`)
+
+## Thoughts: When is a Handler Needed?
+
+**http-nu responsibilities:**
+- Validate request shape and business rules
+- If conformant, append to xs
+- Return the frame (includes event_id) as acknowledgment
+
+**Write commands (activate, deactivate):**
+- Validate → append → return frame. No handler needed.
+- The append itself is the acknowledgment.
+
+**Read commands (list, balances):**
+- Project state from events.
+- Can be done directly in http-nu or via handler-cached state.
+
+**Handler needed when:**
+- Write + immediate read in same operation (web UI updating a pane)
+- Async processing after append
+- Caching projections for performance
+
+**CLI vs Web:**
+```bash
+# CLI: two separate commands
+gl account activate cash asset   # returns frame (ack)
+gl account list                  # projects state
+```
+
+```
+# Web: single operation needs both
+POST /account/activate
+  → append event
+  → project state (or handler does)
+  → SSE patch updates UI
+```
+
+The web combines write + read in one operation. CLI separates them. This is why web may need handlers that CLI doesn't.
